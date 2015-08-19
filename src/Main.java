@@ -11,24 +11,24 @@ import java.util.*;
  */
 public class Main {
 
-    private static final String[] inputHeader = {"Наименование №1", "Артикул производителя", "SEO ссылка на товар (ЧПУ)", "Цена, RUB", "Валюта",
-            "Тег title для товара", "Тег description для товара", "Тег keywords для товара", "Наличие", "Категория товара (полная)"};
-    private static final String[] outputHeader = {"Наименование", "Артикул", "Ссылка на витрину", "Цена", "Валюта",
-            "Заголовок", "META Description", "META Keywords", "В наличии", "Доступен", "Статус"};
-    private static final String inputInStock = "Есть";
-    private static final String inputNotInStock = "Нет";
+    private static final String[] inputHeader = {"РќР°РёРјРµРЅРѕРІР°РЅРёРµ в„–1", "РђСЂС‚РёРєСѓР» РїСЂРѕРёР·РІРѕРґРёС‚РµР»СЏ", "SEO СЃСЃС‹Р»РєР° РЅР° С‚РѕРІР°СЂ (Р§РџРЈ)", "Р¦РµРЅР°, RUB", "Р’Р°Р»СЋС‚Р°",
+            "РўРµРі title РґР»СЏ С‚РѕРІР°СЂР°", "РўРµРі description РґР»СЏ С‚РѕРІР°СЂР°", "РўРµРі keywords РґР»СЏ С‚РѕРІР°СЂР°", "РќР°Р»РёС‡РёРµ", "РљР°С‚РµРіРѕСЂРёСЏ С‚РѕРІР°СЂР° (РїРѕР»РЅР°СЏ)"};
+    private static final String[] outputHeader = {"РќР°РёРјРµРЅРѕРІР°РЅРёРµ", "РђСЂС‚РёРєСѓР»", "РЎСЃС‹Р»РєР° РЅР° РІРёС‚СЂРёРЅСѓ", "Р¦РµРЅР°", "Р’Р°Р»СЋС‚Р°",
+            "Р—Р°РіРѕР»РѕРІРѕРє", "META Description", "META Keywords", "Р’ РЅР°Р»РёС‡РёРё", "Р”РѕСЃС‚СѓРїРµРЅ", "РЎС‚Р°С‚СѓСЃ"};
+    private static final String inputInStock = "Р•СЃС‚СЊ";
+    private static final String inputNotInStock = "РќРµС‚";
     private static final String[] outputInStock = {"10", "1", "1"};
     private static final String[] outputNotInStock = {"0", "0", "0"};
     private static final String[] outputTemp = {"Temp", "", "", "", "", "", "", "", "", "", ""};
 
     public static void main(String[] args) {
 
-        // принимаем аргументы
-        String inputCSV = args[0]; // первый аргумент - имя файла
-        boolean rrp = Boolean.parseBoolean(args[1]); // второй аргумент - необходимость установки РРЦ
-        int numberOfParts = 1; // по умолчанию файл не разбивается на части
-        boolean temp = false; // по умолчанию не добавляется категория Temp
-        if (args.length > 2) { // если аргументов больше двух, то третий - необходимость создания категории Temp, либо количество частей, на которое нужно разбить файл
+        // РїСЂРёРЅРёРјР°РµРј Р°СЂРіСѓРјРµРЅС‚С‹
+        String inputCSV = args[0]; // РїРµСЂРІС‹Р№ Р°СЂРіСѓРјРµРЅС‚ - РёРјСЏ С„Р°Р№Р»Р°
+        boolean rrp = Boolean.parseBoolean(args[1]); // РІС‚РѕСЂРѕР№ Р°СЂРіСѓРјРµРЅС‚ - РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ СѓСЃС‚Р°РЅРѕРІРєРё Р Р Р¦
+        int numberOfParts = 1; // РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ С„Р°Р№Р» РЅРµ СЂР°Р·Р±РёРІР°РµС‚СЃСЏ РЅР° С‡Р°СЃС‚Рё
+        boolean temp = false; // РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ РЅРµ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ РєР°С‚РµРіРѕСЂРёСЏ Temp
+        if (args.length > 2) { // РµСЃР»Рё Р°СЂРіСѓРјРµРЅС‚РѕРІ Р±РѕР»СЊС€Рµ РґРІСѓС…, С‚Рѕ С‚СЂРµС‚РёР№ - РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚СЊ СЃРѕР·РґР°РЅРёСЏ РєР°С‚РµРіРѕСЂРёРё Temp, Р»РёР±Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ С‡Р°СЃС‚РµР№, РЅР° РєРѕС‚РѕСЂРѕРµ РЅСѓР¶РЅРѕ СЂР°Р·Р±РёС‚СЊ С„Р°Р№Р»
             if ("temp".equals(args[2].toLowerCase())) {
                 temp = true;
             } else {
@@ -36,13 +36,13 @@ public class Main {
             }
         }
 
-        // считываем файл
+        // СЃС‡РёС‚С‹РІР°РµРј С„Р°Р№Р»
         List<List<String>> csv = new ArrayList<>();
         boolean converted;
         try (PLiTokenizer tokenizer = new PLiTokenizer(new FileReader(inputCSV), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE);
              CsvListReader reader = new CsvListReader(tokenizer, CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE)) {
 
-            // считываем и проверяем заголовок
+            // СЃС‡РёС‚С‹РІР°РµРј Рё РїСЂРѕРІРµСЂСЏРµРј Р·Р°РіРѕР»РѕРІРѕРє
             System.out.print("Reading & checking header... ");
             String[] header = reader.getHeader(true);
             if (Arrays.equals(header, inputHeader)) {
@@ -56,7 +56,7 @@ public class Main {
                 throw new Error();
             }
 
-            // считываем, проверяем и, если необходимо, конвертируем строки
+            // СЃС‡РёС‚С‹РІР°РµРј, РїСЂРѕРІРµСЂСЏРµРј Рё, РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ, РєРѕРЅРІРµСЂС‚РёСЂСѓРµРј СЃС‚СЂРѕРєРё
             System.out.print("Reading");
             if (converted) {
                 System.out.print(" & checking");
@@ -112,15 +112,15 @@ public class Main {
             return;
         }
 
-        // выставляем фиксированные цены
+        // РІС‹СЃС‚Р°РІР»СЏРµРј С„РёРєСЃРёСЂРѕРІР°РЅРЅС‹Рµ С†РµРЅС‹
         System.out.print("\nSetting of fixed price(s)... ");
 
         List<String[]> fixedPrice = new ArrayList<>();
-        fixedPrice.add(new String[]{"Сервиз LUMINARC AIME COUNTRY FLOWER", "G4029", "1531.00"});
+        fixedPrice.add(new String[]{"РЎРµСЂРІРёР· LUMINARC AIME COUNTRY FLOWER", "G4029", "1531.00"});
 
         System.out.println("OK (setted " + setPrice(csv, fixedPrice, 2) + " of " + fixedPrice.size() + " fixed price(s)).");
 
-        // выставляем цены на акционные товары
+        // РІС‹СЃС‚Р°РІР»СЏРµРј С†РµРЅС‹ РЅР° Р°РєС†РёРѕРЅРЅС‹Рµ С‚РѕРІР°СЂС‹
         System.out.print("Setting of promotional price(s)... ");
 
         List<String[]> promotionalPrice = new ArrayList<>();
@@ -133,7 +133,7 @@ public class Main {
 
         System.out.println("OK (setted " + setPrice(csv, promotionalPrice, 3) + " of " + promotionalPrice.size() + " promotional price(s)).");
 
-        // если нужно, выставляем рекомендованные розничные цены
+        // РµСЃР»Рё РЅСѓР¶РЅРѕ, РІС‹СЃС‚Р°РІР»СЏРµРј СЂРµРєРѕРјРµРЅРґРѕРІР°РЅРЅС‹Рµ СЂРѕР·РЅРёС‡РЅС‹Рµ С†РµРЅС‹
         System.out.print("Setting of recommended retail price(s)... ");
 
         if (rrp) {
@@ -151,7 +151,7 @@ public class Main {
             System.out.println("Skipped.");
         }
 
-        // перезаписываем файл
+        // РїРµСЂРµР·Р°РїРёСЃС‹РІР°РµРј С„Р°Р№Р»
         String outputCSV = inputCSV;
         try (CsvListWriter writer = new CsvListWriter(new FileWriter(outputCSV), CsvPreference.EXCEL_NORTH_EUROPE_PREFERENCE)) {
             System.out.print("\nWriting header");
@@ -174,7 +174,7 @@ public class Main {
             return;
         }
 
-        // если необходимо, разбиваем дополнительно на части
+        // РµСЃР»Рё РЅРµРѕР±С…РѕРґРёРјРѕ, СЂР°Р·Р±РёРІР°РµРј РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ РЅР° С‡Р°СЃС‚Рё
         if (numberOfParts > 1) {
             int partSize = (int)Math.ceil((double)csv.size() / numberOfParts);
             int count = 0;
@@ -197,10 +197,10 @@ public class Main {
             }
         }
 
-        // ищем дубли
+        // РёС‰РµРј РґСѓР±Р»Рё
         System.out.print("\nSearching duplicates... ");
 
-        // считаем количество повторений каждого товара
+        // СЃС‡РёС‚Р°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕРІС‚РѕСЂРµРЅРёР№ РєР°Р¶РґРѕРіРѕ С‚РѕРІР°СЂР°
         Map<String, Integer> duplicates = new HashMap<>();
         String product;
         for (List<String> row : csv) {
@@ -212,7 +212,7 @@ public class Main {
             }
         }
 
-        // убираем товары, встречающиеся по одному разу
+        // СѓР±РёСЂР°РµРј С‚РѕРІР°СЂС‹, РІСЃС‚СЂРµС‡Р°СЋС‰РёРµСЃСЏ РїРѕ РѕРґРЅРѕРјСѓ СЂР°Р·Сѓ
         Iterator it = duplicates.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
@@ -221,7 +221,7 @@ public class Main {
             }
         }
 
-        // выводим результат
+        // РІС‹РІРѕРґРёРј СЂРµР·СѓР»СЊС‚Р°С‚
         if (duplicates.size() == 0) {
             System.out.println("OK (duplicates not found).");
         } else {
@@ -235,7 +235,7 @@ public class Main {
 
     }
 
-    // метод, выставляющий в прайсе цены из передаваемой коллекции массивов
+    // РјРµС‚РѕРґ, РІС‹СЃС‚Р°РІР»СЏСЋС‰РёР№ РІ РїСЂР°Р№СЃРµ С†РµРЅС‹ РёР· РїРµСЂРµРґР°РІР°РµРјРѕР№ РєРѕР»Р»РµРєС†РёРё РјР°СЃСЃРёРІРѕРІ
     static int setPrice(List<List<String>> csv, List<String[]> price, int priceColumn) {
         int count = 0;
         for (int i = 0; i < csv.size(); i++) {
