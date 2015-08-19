@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="super-csv-2.3.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/super-csv-2.3.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
